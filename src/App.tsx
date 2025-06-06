@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Signup } from "./components/auth/Signup";
 import { Login } from "./components/auth/Login";
-import { Header } from "./components/Header";
+import NavBar from "./components/Header";
 
 const router = createBrowserRouter([
   { path: "/signup", element: <Signup /> },
   { path: "/login", element: <Login /> },
-  { path: "/profile", element: <Header /> },
+  { path: "/", element: <NavBar /> },
 ]);
 
 const App = () => {

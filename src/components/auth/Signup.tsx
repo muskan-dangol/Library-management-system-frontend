@@ -17,9 +17,10 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import { useSelector, useDispatch } from "react-redux";
 
 import { AppDispatch, RootState } from "../../store/store";
-import { userSignup, updateFormData } from "../../features/user/userSignupSlice";
-
-// import { userSignupState } from "../../store/atom";
+import {
+  userSignup,
+  updateFormData,
+} from "../../features/user/userSignupSlice";
 
 export const Signup = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,9 +47,10 @@ export const Signup = () => {
     dispatch(updateFormData({ [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(userSignup(formData));
+    await dispatch(userSignup(formData));
+    navigate("/");
   };
 
   return (
@@ -155,7 +157,6 @@ export const Signup = () => {
               variant="contained"
               sx={{ margin: 1 }}
               disabled={loading === true}
-              onClick={() => navigate("/profile")}
             >
               {loading === true ? "Signing up..." : "Sign Up"}
             </Button>

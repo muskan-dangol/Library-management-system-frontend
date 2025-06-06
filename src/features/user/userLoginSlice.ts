@@ -1,11 +1,6 @@
 import axios from "axios";
 import { AxiosError } from "axios";
-import {
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  current,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { apiBaseUrl } from "../../constant";
 import { LoginFormData } from "../../types";
 
@@ -44,11 +39,10 @@ export const userLogin = createAsyncThunk(
         },
       });
       localStorage.setItem("userToken", res.data.token);
-      console.log(res.data);
       return res.data;
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
-      return rejectWithValue(error.response?.data.message || "Login failed");
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
@@ -59,7 +53,15 @@ const loginSlice = createSlice({
   reducers: {
     updateFormData(state, action: PayloadAction<Partial<LoginFormData>>) {
       state.formData = { ...state.formData, ...action.payload };
-      console.log(current(state));
+    },
+    resetFormData(state) {
+      state.formData = { email: "", password: "" };
+    },
+    resetLoginState: (state) => {
+      state.userInfo = null;
+      state.loading = false;
+      state.userToken = null;
+      state.errorMessage = null;
     },
   },
   extraReducers: (builder) => {
@@ -82,5 +84,5 @@ const loginSlice = createSlice({
 });
 
 const { actions, reducer } = loginSlice;
-export const { updateFormData } = actions;
+export const { updateFormData, resetFormData, resetLoginState } = actions;
 export default reducer;

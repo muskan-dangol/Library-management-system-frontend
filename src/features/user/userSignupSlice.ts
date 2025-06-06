@@ -60,12 +60,6 @@ const signupSlice = createSlice({
     resetFormData(state) {
       state.formData = { email: "", password: "", firstname: "", lastname: "" };
     },
-    resetSignupState: (state) => {
-      state.userInfo = null;
-      state.loading = false;
-      state.userToken = null;
-      state.errorMessage = null;
-    },
   },
   extraReducers(builder) {
     builder
@@ -88,6 +82,6 @@ const signupSlice = createSlice({
 
 const { actions, reducer } = signupSlice;
 
-export const { updateFormData, resetFormData, resetSignupState } = actions;
+export const { updateFormData, resetFormData } = actions;
 
 export default reducer;

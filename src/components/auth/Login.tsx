@@ -46,9 +46,10 @@ export const Login = () => {
     dispatch(updateFormData({ [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(userLogin(formData));
+    await dispatch(userLogin(formData));
+    navigate("/");
   };
 
   return (
@@ -171,7 +172,6 @@ export const Login = () => {
               variant="contained"
               sx={{ margin: 1 }}
               disabled={loading === true}
-              onClick={() => navigate("/profile")}
             >
               {loading === true ? "loading..." : "Login"}
             </Button>
