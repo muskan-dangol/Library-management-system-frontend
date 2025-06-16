@@ -19,14 +19,20 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 import { AppDispatch, RootState } from "../../store/store";
-import { userLogin, updateFormData } from "../../features/user/userLoginSlice";
+import {
+  resetFormData,
+  setCredentials,
+  updateFormData,
+} from "../../features/auth/userLoginSlice";
+import { useLoginMutation } from "../../services/authApi";
 
 export const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { formData, loading } = useSelector((state: RootState) => state.login);
+  const { formData } = useSelector((state: RootState) => state.login);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -48,7 +54,13 @@ export const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(userLogin(formData));
+
+    const user = await login(formData).unwrap();
+    dispatch(setCredentials(user));
+    localStorage.setItem("userToken", user.token);
+    localStorage.setItem("userId", user.user.id);
+    localStorage.setItem("isAdmin", user.user.is_admin ? "true" : "false");
+    dispatch(resetFormData());
     navigate("/");
   };
 
@@ -171,9 +183,9 @@ export const Login = () => {
               type="submit"
               variant="contained"
               sx={{ margin: 1 }}
-              disabled={loading === true}
+              disabled={isLoading === !!true}
             >
-              {loading === true ? "loading..." : "Login"}
+              {isLoading === true ? "loading..." : "Login"}
             </Button>
             <FormHelperText id="my-helper-text">
               Don't have an account?

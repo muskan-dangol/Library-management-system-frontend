@@ -24,8 +24,8 @@ import {
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 
-import { AppDispatch } from "../store/store";
-import { resetLoginState } from "../features/user/userLoginSlice";
+import { AppDispatch } from "../../store/store";
+import { logout, setCredentials } from "../../features/auth/userLoginSlice";
 
 const pages = ["Books", "New Arrivals", "Best Sellers"];
 const navMenuAnchorConfig = {
@@ -93,12 +93,15 @@ interface NavLinksProps {
   onClick?: () => void;
 }
 
-const NavLinks: React.FC<NavLinksProps> = ({ isMobile = false, onClick }) => {
+const NavLinks: React.FC<NavLinksProps> = ({ isMobile = false }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (path: string) => {
-    navigate(path.replace(/ /g, "-").toLowerCase());
-    onClick?.();
+    const formattedPath = path.replace(/ /g, "-").toLowerCase();
+
+    if (location.pathname !== `/${formattedPath}`) {
+      navigate(`/${formattedPath}`);
+    }
   };
 
   return (
@@ -152,7 +155,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({
 );
 
 // Main Component
-export default function NavBar() {
+export const NavBar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -177,8 +180,9 @@ export default function NavBar() {
   };
 
   const handleSignOut = () => {
-    dispatch(resetLoginState());
-    localStorage.removeItem("userToken");
+    dispatch(logout());
+    localStorage.clear();
+    dispatch(setCredentials(null));
     navigate("/");
   };
 
@@ -293,4 +297,4 @@ export default function NavBar() {
       </AppBar>
     </Box>
   );
-}
+};

@@ -18,9 +18,11 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { AppDispatch, RootState } from "../../store/store";
 import {
-  userSignup,
+  resetFormData,
+  setCredentials,
   updateFormData,
-} from "../../features/user/userSignupSlice";
+} from "../../features/auth/userSignupSlice";
+import { useSignupMutation } from "../../services/authApi";
 
 export const Signup = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,6 +30,7 @@ export const Signup = () => {
 
   const { formData, loading } = useSelector((state: RootState) => state.signup);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [signup] = useSignupMutation();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -49,7 +52,13 @@ export const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(userSignup(formData));
+
+    const user = await signup(formData).unwrap();
+    dispatch(setCredentials(user));
+    localStorage.setItem("userToken", user.token);
+    localStorage.setItem("userId", user.user.id);
+    localStorage.setItem("isAdmin", user.user.is_admin ? "true" : "false");
+    dispatch(resetFormData());
     navigate("/");
   };
 
