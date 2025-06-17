@@ -19,5 +19,5 @@ export interface Book {
   available: number;
   short_description: string;
   long_description: string;
-  category_id: string;
+  category_id?: string;
 }
