@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NavBar } from "../common/NavBar";
+import { NavBar } from "../NavBar";
 import { Typography } from "@mui/material";
 
 export const Books = () => {

@@ -1,167 +1,40 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
-import { styled, alpha } from "@mui/material/styles";
 import {
   AppBar,
   Box,
   Toolbar,
   IconButton,
-  Typography,
   Button,
   Menu,
-  MenuItem,
   Badge,
-  InputBase,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
-  Search as SearchIcon,
   AccountCircle,
   AccountCircleOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 
-import { AppDispatch } from "../../store/store";
-import { logout, setCredentials } from "../../features/auth/userLoginSlice";
+import { AppDispatch } from "../store/store";
+import { logout, setCredentials } from "../features/auth/userLoginSlice";
+import { NavMenus } from "./common/NavMenu";
+import { SearchBar } from "./common/SearchBar";
 
-const pages = ["Books", "New Arrivals", "Best Sellers"];
 const navMenuAnchorConfig = {
   anchorOrigin: { vertical: "bottom", horizontal: "left" },
   transformOrigin: { vertical: "top", horizontal: "left" },
 } as const;
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "auto",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "100%",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
-interface SearchBarProps {
-  sx?: object;
-}
-
-const SearchBar: React.FC<SearchBarProps> = ({ sx }) => (
-  <Search sx={sx}>
-    <SearchIconWrapper>
-      <SearchIcon />
-    </SearchIconWrapper>
-    <StyledInputBase
-      placeholder="Search…"
-      inputProps={{ "aria-label": "search" }}
-    />
-  </Search>
-);
-
-interface NavLinksProps {
-  isMobile?: boolean;
-  onClick?: () => void;
-}
-
-const NavLinks: React.FC<NavLinksProps> = ({ isMobile = false }) => {
-  const navigate = useNavigate();
-
-  const handleNavigate = (path: string) => {
-    const formattedPath = path.replace(/ /g, "-").toLowerCase();
-
-    if (location.pathname !== `/${formattedPath}`) {
-      navigate(`/${formattedPath}`);
-    }
-  };
-
-  return (
-    <>
-      {pages.map((page) =>
-        isMobile ? (
-          <MenuItem key={page} onClick={() => handleNavigate(page)}>
-            <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-          </MenuItem>
-        ) : (
-          <Button
-            key={page}
-            sx={{ my: 2, color: "white", display: "block" }}
-            onClick={() => handleNavigate(page)}
-          >
-            {page}
-          </Button>
-        )
-      )}
-    </>
-  );
-};
-
-interface AuthButtonProps {
-  isAuthenticated: boolean;
-  onSignOut: () => void;
-  onNavigate: (path: string) => void;
-}
-
-const AuthButton: React.FC<AuthButtonProps> = ({
-  isAuthenticated,
-  onSignOut,
-  onNavigate,
-}) => (
-  <IconButton
-    size="small"
-    color="inherit"
-    sx={{
-      width: "auto",
-      whiteSpace: "nowrap",
-      alignContent: "center",
-      justifyContent: "center",
-      borderRadius: isAuthenticated ? 0 : 2,
-      margin: isAuthenticated ? 0 : 1,
-    }}
-    onClick={isAuthenticated ? onSignOut : () => onNavigate("/login")}
-  >
-    {isAuthenticated ? <LogoutOutlined /> : <AccountCircleOutlined />}
-    {isAuthenticated ? "Sign out" : "Login"}
-  </IconButton>
-);
-
-// Main Component
 export const NavBar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
-
   const isAuthenticated = !!localStorage.getItem("userToken");
 
   const handleMenuOpen = (
@@ -217,7 +90,7 @@ export const NavBar = () => {
               onClose={() => handleMenuClose(true)}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              <NavLinks isMobile onClick={() => handleMenuClose(true)} />
+              <NavMenus isMobile onClick={() => handleMenuClose(true)} />
             </Menu>
           </Box>
           <Button sx={{ color: "white" }} onClick={() => navigate("/")}>
@@ -232,11 +105,24 @@ export const NavBar = () => {
               display: "flex",
             }}
           >
-            <AuthButton
-              isAuthenticated={isAuthenticated}
-              onSignOut={handleSignOut}
-              onNavigate={handleNavigate}
-            />
+            <IconButton
+              size="small"
+              color="inherit"
+              sx={{
+                width: "auto",
+                whiteSpace: "nowrap",
+                alignContent: "center",
+                justifyContent: "center",
+                borderRadius: isAuthenticated ? 0 : 2,
+                margin: isAuthenticated ? 0 : 1,
+              }}
+              onClick={
+                isAuthenticated ? handleSignOut : () => handleNavigate("/login")
+              }
+            >
+              {isAuthenticated ? <LogoutOutlined /> : <AccountCircleOutlined />}
+              {isAuthenticated ? "Sign out" : "Login"}
+            </IconButton>
             {isAuthenticated && (
               <IconButton
                 size="large"
@@ -277,7 +163,7 @@ export const NavBar = () => {
             padding: "0px 24px",
           }}
         >
-          <NavLinks />
+          <NavMenus />
           {isAuthenticated && (
             <IconButton
               size="large"
