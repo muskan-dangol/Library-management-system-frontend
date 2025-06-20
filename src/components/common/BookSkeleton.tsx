@@ -7,7 +7,7 @@ type SkeletonProp = {
 
 export const BookSkeleton: React.FC<SkeletonProp> = ({ index }) => {
   return (
-    <Box key={index} sx={{ width: { xs: "100%", md: 220 } }}>
+    <Box key={index} sx={{ width: { xs: "100%", md: "100%" } }}>
       <Skeleton variant="rectangular" height={300} />
       <Box sx={{ pt: 0.5 }}>
         <Skeleton width={200} height={30} />

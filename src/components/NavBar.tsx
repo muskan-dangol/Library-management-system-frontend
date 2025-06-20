@@ -31,7 +31,7 @@ const navMenuAnchorConfig = {
 export const NavBar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );

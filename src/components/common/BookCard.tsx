@@ -6,7 +6,6 @@ type BookProps = {
 };
 
 export const BookCard: React.FC<BookProps> = ({ book: book }) => {
-  console.log(typeof book);
   return (
     <Paper
       key={book.id}

@@ -14,6 +14,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useSelector, useDispatch } from "react-redux";
 
+import { useRedirectIfAuthenticated } from "../../constant";
 import { AppDispatch, RootState } from "../../store/store";
 import {
   resetFormData,
@@ -24,6 +25,7 @@ import { useSignupMutation } from "../../services/authApi";
 import { FromWrapper } from "../common/FormWrapper";
 
 export const Signup = () => {
+  useRedirectIfAuthenticated();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 

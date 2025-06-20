@@ -3,11 +3,13 @@ import { Box, Skeleton } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
+import { useRedirectIfNotAuthenticated } from "../constant";
 import { useGetUserDetailQuery } from "../services/userApi";
 import { setCredentials } from "../features/auth/userSignupSlice";
 import { NavBar } from "./NavBar";
 
 export const Profile = () => {
+  useRedirectIfNotAuthenticated();
   const dispatch = useDispatch();
 
   const userId = localStorage.getItem("userId");
