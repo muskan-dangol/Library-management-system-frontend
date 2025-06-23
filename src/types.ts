@@ -21,3 +21,17 @@ export interface Book {
   long_description: string;
   category_id?: string;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+}
+
+export interface FiltersState {
+  Category: string[];
+  Author: string[];
+}
+
+export interface SortState {
+  sortBy: string;
+}

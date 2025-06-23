@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { Book } from "../types";
 
 export interface BookResponse {
   id: string;
@@ -9,12 +10,12 @@ export interface BookResponse {
   short_description: string;
   long_description: string;
   image: string;
-  created_on: string;
+  category_id?: string;
 }
 
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllBooksDetails: builder.query({
+    getAllBooksDetails: builder.query<Book[], string>({
       query: () => ({
         url: "/books",
         method: "GET",
