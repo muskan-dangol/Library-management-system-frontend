@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { FiltersState, SortState } from "../types";
+import { FiltersState } from "../types";
 
 // export const userSignupState = atom({
 //   key: "userSignupState",
@@ -24,9 +24,7 @@ export const filterBookState = atom<FiltersState>({
   },
 });
 
-export const SortBookState = atom<SortState>({
-  key: "SortBookState",
-  default: {
-    sortBy: "",
-  },
+export const sortBookState = atom({
+  key: "sortBookState",
+  default: "",
 });

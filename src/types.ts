@@ -31,7 +31,3 @@ export interface FiltersState {
   Category: string[];
   Author: string[];
 }
-
-export interface SortState {
-  sortBy: string;
-}

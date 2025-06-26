@@ -6,10 +6,7 @@ import { FilterMenu } from "../common/FilterMenu";
 import { Book, FiltersState } from "../../types";
 import { useGetAllCategoriesQuery } from "../../services/categoryApi";
 
-export const FilterMenuList: React.FC<FilterMenuListProps> = ({
-  onFilterChange,
-  books,
-}) => {
+export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
   const { data: allCategories } = useGetAllCategoriesQuery("category");
 
   const [selectedFilters, setSelectedFilters] = useState<FiltersState>({
@@ -39,7 +36,6 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({
   const handleFilterChange = (type: string, selected: string[]) => {
     const newFilters = { ...selectedFilters, [type]: selected };
     setSelectedFilters(newFilters);
-    onFilterChange(newFilters);
   };
 
   return (
@@ -66,6 +62,5 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({
 };
 
 type FilterMenuListProps = {
-  onFilterChange: (filters: FiltersState) => void;
   books: Book[] | undefined;
 };

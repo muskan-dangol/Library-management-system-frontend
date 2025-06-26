@@ -1,22 +1,32 @@
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useMemo } from "react";
-import { useRecoilState } from "recoil";
+// import { useMemo } from "react";
+import { useRecoilValue } from "recoil";
 
 import { NavBar } from "../NavBar";
-import { useGetAllBooksDetailsQuery } from "../../services/bookApi";
+import {
+  useGetAllBooksDetailsQuery,
+  useFilteredBooksByKeywordQuery,
+} from "../../services/bookApi";
 import { CustomButton } from "../common/Button";
 import { useGetUserDetailQuery } from "../../services/userApi";
 import { FilterMenuList } from "./FilterMenuList";
 import { SortMenuList } from "./SortMenuList";
-import { filterBookState, SortBookState } from "../../store/atom";
+import { sortBookState } from "../../store/atom";
 import { BookSkeleton } from "../common/BookSkeleton";
 
 export const Books = () => {
   const navigate = useNavigate();
-  const [filters, setFilters] = useRecoilState(filterBookState);
-  const [sort, setSort] = useRecoilState(SortBookState);
+
+  const sortBy = useRecoilValue(sortBookState);
+
+  const { data: filteredBooks } = useFilteredBooksByKeywordQuery(
+    { sortBy },
+    {
+      skip: !sortBy,
+    }
+  );
 
   const userId = localStorage.getItem("userId");
   const { data: user } = useGetUserDetailQuery(userId || "", {
@@ -24,21 +34,6 @@ export const Books = () => {
   });
 
   const { data: book, isLoading } = useGetAllBooksDetailsQuery("book");
-
-  const filteredData = useMemo(() => {
-    if (!book) return [];
-    return book.filter((book) => {
-      const categoryMatch =
-        filters.Category.length === 0 ||
-        filters.Category.includes(
-          book.category_id?.toLowerCase().replace(/\s+/g, "-") || ""
-        );
-      const authorMatch =
-        filters.Author.length === 0 ||
-        filters.Author.includes(book.author.toLowerCase().replace(/\s+/g, "-"));
-      return categoryMatch && authorMatch;
-    });
-  }, [book, filters]);
 
   return (
     <>
@@ -62,7 +57,7 @@ export const Books = () => {
               display: "flex",
             }}
           >
-            <FilterMenuList onFilterChange={setFilters} books={book} />
+            <FilterMenuList books={book} />
           </Grid>
           <Grid
             size={{
@@ -75,7 +70,7 @@ export const Books = () => {
               justifyContent: { xs: "flex-start", sm: "flex-end" },
             }}
           >
-            <SortMenuList onSortChange={setSort} />
+            <SortMenuList />
           </Grid>
         </Grid>
 
@@ -95,7 +90,7 @@ export const Books = () => {
               </Grid>
             ))}
 
-          {filteredData?.map((book, index: number) => (
+          {(filteredBooks ?? book)?.map((book, index: number) => (
             <Grid
               key={index}
               size={{ xs: 12, sm: 6, md: 3, lg: 3 }}

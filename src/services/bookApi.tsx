@@ -30,7 +30,23 @@ export const bookApi = api.injectEndpoints({
       }),
       providesTags: ["book"],
     }),
+
+    FilteredBooksByKeyword: builder.query<
+      Book[],
+      { sortBy?: string; searchKeyword?: string }
+    >({
+      query: ({ sortBy, searchKeyword }) => ({
+        url: `/books/search`,
+        method: "GET",
+        params: {
+          sortBy,
+          searchKeyword,
+        },
+      }),
+      providesTags: ["book"],
+    }),
   }),
 });
 
-export const { useGetAllBooksDetailsQuery, useGetBookByIdQuery } = bookApi;
+export const { useGetAllBooksDetailsQuery,useGetBookByIdQuery,  useFilteredBooksByKeywordQuery } =
+  bookApi;
