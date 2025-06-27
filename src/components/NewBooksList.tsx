@@ -1,10 +1,17 @@
+import { useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useRecoilState } from "recoil";
 
 import { BookSkeleton } from "./common/BookSkeleton";
 import { useGetAllBooksDetailsQuery } from "../services/bookApi";
+import { BookModal } from "./common/BookModal";
+import { selectedBookIndex } from "../store/atom";
 
 export const NewBooksList = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
+
   const { data: book, isLoading } = useGetAllBooksDetailsQuery("book");
 
   return (
@@ -18,7 +25,7 @@ export const NewBooksList = () => {
     >
       <Typography
         variant="h6"
-        sx={{ borderBottom: "1px solid black", width: "fit-content" }}
+        sx={{ borderBottom: "1px solid black", width: "fit-content", mb: 2 }}
       >
         Checkout the new additions:
       </Typography>
@@ -39,19 +46,24 @@ export const NewBooksList = () => {
         {book?.map((book, index: number) => (
           <Grid
             key={index}
-            size={{ xs: 12, sm: 4, md: 3, lg: 2 }}
+            size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
             sx={{
-              mt: 3,
+              mt: "12px",
             }}
           >
-            <Item key={index}>
+            <Item
+              key={index}
+              onClick={() => {
+                setSelectedIndex(index);
+                setOpen(true);
+              }}
+            >
               <>
                 <img
                   style={{
                     width: "100%",
                     maxHeight: "100%",
-                    height: 200,
-                    objectFit: "cover",
+                    objectFit: "contain",
                     borderRadius: "4px",
                   }}
                   alt={book.title}
@@ -83,17 +95,6 @@ export const NewBooksList = () => {
                   variant="body2"
                   sx={{
                     fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <b>Author:</b> {book.author}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
                     display: "flex",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -107,6 +108,13 @@ export const NewBooksList = () => {
           </Grid>
         ))}
       </Grid>
+
+      <BookModal
+        open={open}
+        onClose={() => setOpen(false)}
+        books={book || []}
+        initialIndex={selectedIndex}
+      />
     </Box>
   );
 };
@@ -117,6 +125,7 @@ const Item = styled(Paper)(({ theme }) => ({
   boxShadow: "none",
   ...theme.typography.body2,
   padding: theme.spacing(1.5),
+  paddingBottom: 0,
   textAlign: "justify",
   cursor: "pointer",
   color: (theme.vars ?? theme).palette.text.secondary,

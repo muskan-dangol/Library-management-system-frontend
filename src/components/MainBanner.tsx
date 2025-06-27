@@ -42,6 +42,7 @@ export const MainBanner = () => {
           sx={{
             textAlign: "center",
             margin: 4,
+            mt: 0,
             fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
             fontWeight: { xs: "500", sm: "500", md: "400" },
           }}
