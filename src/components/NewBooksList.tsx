@@ -5,7 +5,7 @@ import { BookSkeleton } from "./common/BookSkeleton";
 import { useGetAllBooksDetailsQuery } from "../services/bookApi";
 
 export const NewBooksList = () => {
-  const { data: book, isLoading } = useGetAllBooksDetailsQuery("book");
+  const { data: book = [], isLoading } = useGetAllBooksDetailsQuery("book");
 
   return (
     <Box
@@ -36,15 +36,15 @@ export const NewBooksList = () => {
             </Grid>
           ))}
 
-        {book?.map((book, index: number) => (
+        {book.map((book) => (
           <Grid
-            key={index}
+            key={book.id}
             size={{ xs: 12, sm: 4, md: 3, lg: 2 }}
             sx={{
               mt: 3,
             }}
           >
-            <Item key={index}>
+            <Item key={book.id}>
               <>
                 <img
                   style={{
