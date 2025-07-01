@@ -1,4 +1,4 @@
-// import { atom } from "recoil";
+import { atom } from "recoil";
 
 // export const userSignupState = atom({
 //   key: "userSignupState",
@@ -9,3 +9,8 @@
 //     lastname: "",
 //   },
 // });
+
+export const selectedBookIndex = atom({
+  key: "selectedBookIndex",
+  default: 0,
+});
