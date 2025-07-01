@@ -12,7 +12,8 @@ export const NewBooksList = () => {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
 
-  const { data: book, isLoading } = useGetAllBooksDetailsQuery("book");
+  const { data: book = [], isLoading } = useGetAllBooksDetailsQuery("book");
+
 
   return (
     <Box
@@ -43,16 +44,16 @@ export const NewBooksList = () => {
             </Grid>
           ))}
 
-        {book?.map((book, index: number) => (
+        {book.map((book) => (
           <Grid
-            key={index}
+            key={book.id}
             size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
             sx={{
               mt: "12px",
             }}
           >
             <Item
-              key={index}
+              key={book.id}
               onClick={() => {
                 setSelectedIndex(index);
                 setOpen(true);
