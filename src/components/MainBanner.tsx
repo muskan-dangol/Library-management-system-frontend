@@ -5,9 +5,11 @@ import { useTheme, useMediaQuery } from "@mui/material";
 
 import { useGetAllBooksDetailsQuery } from "../services/bookApi";
 import { NavBar } from "./NavBar";
+import { NewBooksList } from "./NewBooksList";
 import { data } from "../constant";
 import { BookCard } from "./common/BookCard";
 import { BookSkeleton } from "./common/BookSkeleton";
+import { ScrollTopArrow } from "./common/ScrollTopArrow";
 
 interface RenderDotProps {
   selected: boolean;
@@ -96,6 +98,8 @@ export const MainBanner = () => {
           </Carousel>
         )}
       </Box>
+      <NewBooksList />
+      <ScrollTopArrow />
     </>
   );
 };
