@@ -14,7 +14,6 @@ export const NewBooksList = () => {
 
   const { data: book = [], isLoading } = useGetAllBooksDetailsQuery("book");
 
-
   return (
     <Box
       sx={{
@@ -44,7 +43,7 @@ export const NewBooksList = () => {
             </Grid>
           ))}
 
-        {book.map((book) => (
+        {book.map((book, index: number) => (
           <Grid
             key={book.id}
             size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
