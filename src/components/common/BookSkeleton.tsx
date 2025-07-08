@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@mui/material";
 import React from "react";
 
 type SkeletonProp = {
-  index: number;
+  index?: number;
 };
 
 export const BookSkeleton: React.FC<SkeletonProp> = ({ index }) => {

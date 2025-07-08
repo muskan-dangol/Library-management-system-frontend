@@ -103,7 +103,10 @@ export const BookModal: React.FC<BookModalProp> = ({
                   </Typography>
                 )}
                 <Button
-                  onClick={() => navigate(`detail/${book.id}`)}
+                  onClick={() => {
+                    navigate(`detail/${book.id}`);
+                    onClose();
+                  }}
                   sx={{ color: "#000", mb: 1 }}
                 >
                   Show Detailed Information
