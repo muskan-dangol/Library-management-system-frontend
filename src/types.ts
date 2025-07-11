@@ -30,4 +30,5 @@ export interface Category {
 export interface FiltersState {
   Category: string[];
   Author: string[];
+  ReleaseDate: number[];
 }

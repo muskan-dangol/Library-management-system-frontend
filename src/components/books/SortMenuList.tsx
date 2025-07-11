@@ -14,9 +14,8 @@ export const SortMenuList = () => {
   ];
 
   const handleSortChange = (selected: string[]) => {
-    const sortValue = selected[0] ?? "";
-    const newSort = sortValue;
-    setSortBy(newSort);
+    const newSortValue = selected[0] ?? "";
+    setSortBy(newSortValue);
   };
 
   return (
@@ -25,10 +24,10 @@ export const SortMenuList = () => {
       spacing={2}
       sx={{ mb: 2, mt: 2, alignItems: "center" }}
     >
-      <Typography variant="h6">Sort Books:</Typography>
+      <Typography variant="h6">Sort:</Typography>
 
       <FilterMenu
-        label="Sort"
+        label="Default"
         options={sortMenus}
         selected={sortBy ? [sortBy] : []}
         onChange={handleSortChange}

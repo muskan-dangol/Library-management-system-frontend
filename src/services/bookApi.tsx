@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { Book } from "../types";
+import { Book, FiltersState } from "../types";
 
 export interface BookResponse {
   id: string;
@@ -31,16 +31,19 @@ export const bookApi = api.injectEndpoints({
       providesTags: ["book"],
     }),
 
-    FilteredBooksByKeyword: builder.query<
+    getFilteredBooksByKeyword: builder.query<
       Book[],
-      { sortBy?: string; searchKeyword?: string }
+      { sortBy?: string; filterBy?: FiltersState; searchKeyword?: string }
     >({
-      query: ({ sortBy, searchKeyword }) => ({
+      query: ({ sortBy, filterBy }) => ({
         url: `/books/search`,
         method: "GET",
         params: {
           sortBy,
-          searchKeyword,
+          filterCategories: filterBy?.Category,
+          filterAuthors: filterBy?.Author,
+          filterReleaseDate: filterBy?.ReleaseDate,
+          // searchKeyword,
         },
       }),
       providesTags: ["book"],
@@ -48,5 +51,5 @@ export const bookApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetAllBooksDetailsQuery,useGetBookByIdQuery,  useFilteredBooksByKeywordQuery } =
+export const { useGetAllBooksDetailsQuery, useGetFilteredBooksByKeywordQuery, useGetBookByIdQuery } =
   bookApi;

@@ -1,21 +1,20 @@
-import { useState } from "react";
-import { useMemo } from "react";
-import { Stack, Typography } from "@mui/material";
+import { useMemo, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { Stack, Typography, FormControl, Slider } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import { FilterMenu } from "../common/FilterMenu";
-import { Book, FiltersState } from "../../types";
+import { MultiSelectDropdown } from "../common/MultiSelectDropDown";
+import { Book } from "../../types";
+import { filterBookState } from "../../store/atom";
 import { useGetAllCategoriesQuery } from "../../services/categoryApi";
 
 export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
   const { data: allCategories } = useGetAllCategoriesQuery("category");
 
-  const [selectedFilters, setSelectedFilters] = useState<FiltersState>({
-    Category: [],
-    Author: [],
-  });
+  const [selectedFilters, setSelectedFilters] = useRecoilState(filterBookState);
 
   const filterMenus = useMemo(() => {
-    const categories = (allCategories || [])?.map((category) => ({
+    const categories = (allCategories || []).map((category) => ({
       value: category.id,
       label: category.name,
     }));
@@ -23,7 +22,7 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
     const authors = Array.from(new Set(books?.map((book) => book.author)))
       .filter(Boolean)
       .map((author) => ({
-        value: author.toLowerCase().replace(/\s+/g, "-"),
+        value: author,
         label: author,
       }));
 
@@ -33,30 +32,86 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
     };
   }, [allCategories, books]);
 
-  const handleFilterChange = (type: string, selected: string[]) => {
-    const newFilters = { ...selectedFilters, [type]: selected };
-    setSelectedFilters(newFilters);
-  };
+  const latestYear = useMemo(() => {
+    if (!books || books.length === 0) return new Date().getFullYear();
+
+    const years = books.map((book) =>
+      new Date(book.release_date).getFullYear()
+    );
+    return Math.max(...years);
+  }, [books]);
+
+  const oldestYear = useMemo(() => {
+    if (!books || books.length === 0) return new Date().getFullYear();
+
+    const years = books.map((book) =>
+      new Date(book.release_date).getFullYear()
+    );
+    return Math.min(...years);
+  }, [books]);
+
+  useEffect(() => {
+    if (
+      books?.length &&
+      selectedFilters.ReleaseDate[0] === selectedFilters.ReleaseDate[1]
+    ) {
+      setSelectedFilters((prev) => ({
+        ...prev,
+        ReleaseDate: [oldestYear, latestYear],
+      }));
+    }
+  }, [books, oldestYear, latestYear]);
 
   return (
-    <Stack
-      direction="row"
-      spacing={2}
-      sx={{ mb: 2, mt: 2, alignItems: "center" }}
-    >
-      <Typography variant="h6">Filters:</Typography>
+    <Stack direction="column" spacing={2} sx={{ mb: 2, mt: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{ borderBottom: "1px solid black", width: "fit-content" }}
+      >
+        Filter Options:
+      </Typography>
 
-      {Object.entries(filterMenus).map(([type, options]) => (
-        <FilterMenu
-          key={type}
-          label={type}
-          options={options}
-          selected={selectedFilters[type as keyof FiltersState]}
-          onChange={(selected) => handleFilterChange(type, selected)}
-          checkBox={true}
-          radioButton={false}
+      <FormContent>
+        <MultiSelectDropdown
+          label="Categories"
+          options={filterMenus.Category}
+          selected={selectedFilters.Category}
+          onChange={(newSelected) =>
+            setSelectedFilters((prev) => ({ ...prev, Category: newSelected }))
+          }
         />
-      ))}
+      </FormContent>
+
+      <FormContent>
+        <MultiSelectDropdown
+          label="Authors"
+          options={filterMenus.Author}
+          selected={selectedFilters.Author}
+          onChange={(newSelected) =>
+            setSelectedFilters((prev) => ({ ...prev, Author: newSelected }))
+          }
+        />
+      </FormContent>
+      <FormContent>
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Book Release Date:
+        </Typography>
+        <Slider
+          sx={{ mt: 1 }}
+          getAriaLabel={() => "Year range"}
+          value={selectedFilters.ReleaseDate}
+          min={oldestYear}
+          max={latestYear}
+          step={1}
+          onChange={(event: Event, newValue: number[]) =>
+            setSelectedFilters((prev) => ({
+              ...prev,
+              ReleaseDate: newValue,
+            }))
+          }
+          valueLabelDisplay="auto"
+        />
+      </FormContent>
     </Stack>
   );
 };
@@ -64,3 +119,7 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
 type FilterMenuListProps = {
   books: Book[] | undefined;
 };
+
+const FormContent = styled(FormControl)`
+  width: 100%;
+`;

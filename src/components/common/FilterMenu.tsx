@@ -9,7 +9,6 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 
 export const FilterMenu: React.FC<FilterMenuProps> = ({
-  label,
   options,
   selected,
   onChange,
@@ -59,7 +58,6 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({
     }
   };
 
-  // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -73,7 +71,7 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({
     <Stack direction="row" spacing={2}>
       <div>
         <Button
-          variant="contained"
+          variant="outlined"
           ref={anchorRef}
           id="composition-button"
           aria-controls={open ? "composition-menu" : undefined}
@@ -82,10 +80,15 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({
           onClick={handleToggle}
           sx={{
             ml: 0.5,
-            backgroundColor: open ? "#2e4459c4" : "#031628",
+            color: "#031628",
+            border: "1px, solid, #031628",
+            textTransform: "none",
           }}
         >
-          {label}
+          {selected.length > 0
+            ? options.find((opt) => opt.value === selected[0])?.label ||
+              "Default"
+            : "Default"}
         </Button>
 
         <Popper
