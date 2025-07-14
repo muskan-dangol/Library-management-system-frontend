@@ -8,14 +8,14 @@ import { useGetAllBookReviewsQuery } from "../services/reviewApi";
 import { BookSkeleton } from "./common/BookSkeleton";
 
 export const BookDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: bookId } = useParams<{ id: string }>();
 
-  const { data: review = [] } = useGetAllBookReviewsQuery(id || "", {
-    skip: !id,
+  const { data: reviews = [] } = useGetAllBookReviewsQuery(bookId || "", {
+    skip: !bookId,
   });
 
-  const { data: book = [], isLoading } = useGetBookByIdQuery(id || "", {
-    skip: !id,
+  const { data: book = Object, isLoading } = useGetBookByIdQuery(bookId || "", {
+    skip: !bookId,
   });
 
   return (
@@ -63,7 +63,7 @@ export const BookDetailPage = () => {
               <Box sx={{ "& > legend": { mt: 2 } }}>
                 <Rating
                   name="read-only"
-                  value={review.averageRating}
+                  value={reviews.average_rating}
                   readOnly
                 />
               </Box>

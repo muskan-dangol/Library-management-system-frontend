@@ -5,7 +5,7 @@ export interface ReviewResponse {
   user_id: string;
   book_id: string;
   comment: string;
-  averageRating: number;
+  average_rating: number;
   created_on: string;
 }
 
@@ -17,7 +17,8 @@ export interface CreateReviewRequest {
 }
 
 export interface UpdateReviewRequest {
-  id: string;
+  review_id: string;
+  book_id: string;
   comment: string;
   rating: number;
 }
@@ -25,16 +26,16 @@ export interface UpdateReviewRequest {
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllBookReviews: builder.query({
-      query: (id: string) => ({
-        url: `reviews/book/${id}`,
+      query: (bookId: string) => ({
+        url: `books/${bookId}/reviews`,
         method: "GET",
       }),
       providesTags: ["review"],
     }),
 
     addBookReview: builder.query<ReviewResponse, CreateReviewRequest>({
-      query: (newBookReview) => ({
-        url: `reviews`,
+      query: ({ book_id, ...newBookReview }) => ({
+        url: `books/${book_id}/reviews`,
         method: "POST",
         body: newBookReview,
       }),
@@ -42,8 +43,8 @@ export const bookApi = api.injectEndpoints({
     }),
 
     updateBookReview: builder.query<ReviewResponse, UpdateReviewRequest>({
-      query: ({ id: reviewId, ...rest }) => ({
-        url: `reviews/${reviewId}`,
+      query: ({ book_id, review_id, ...rest }) => ({
+        url: `books/${book_id}/reviews/${review_id}`,
         method: "PATCH",
         body: rest,
       }),
