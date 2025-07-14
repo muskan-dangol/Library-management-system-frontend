@@ -3,7 +3,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import { useTheme, useMediaQuery } from "@mui/material";
 
-import { useGetAllBooksDetailsQuery } from "../services/bookApi";
+import { useGetAllBooksQuery } from "../services/bookApi";
 import { NavBar } from "./NavBar";
 import { NewBooksList } from "./NewBooksList";
 import { BookCard } from "./common/BookCard";
@@ -16,7 +16,7 @@ export const MainBanner = () => {
   const isMedium = useMediaQuery(theme.breakpoints.down("md"));
   const booksPerSlide = isMobile ? 1 : isMedium ? 3 : 5;
 
-  const { data, isLoading, error } = useGetAllBooksDetailsQuery("booksDetails");
+  const { data, isLoading, error } = useGetAllBooksQuery("books");
 
   const bookGroups = useMemo(
     () => chunkArray(data, booksPerSlide),

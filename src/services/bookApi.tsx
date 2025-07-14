@@ -15,7 +15,7 @@ export interface BookResponse {
 
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllBooksDetails: builder.query<Book[], string>({
+    getAllBooks: builder.query<Book[], string>({
       query: () => ({
         url: "/books",
         method: "GET",
@@ -51,5 +51,5 @@ export const bookApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetAllBooksDetailsQuery, useGetFilteredBooksByKeywordQuery, useGetBookByIdQuery } =
+export const { useGetAllBooksQuery, useGetFilteredBooksByKeywordQuery, useGetBookByIdQuery } =
   bookApi;

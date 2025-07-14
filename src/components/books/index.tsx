@@ -12,20 +12,26 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 import { NavBar } from "../NavBar";
 import {
-  useGetAllBooksDetailsQuery,
+  useGetAllBooksQuery,
   useGetFilteredBooksByKeywordQuery,
 } from "../../services/bookApi";
 import { CustomButton } from "../common/Button";
 import { useGetUserDetailQuery } from "../../services/userApi";
 import { FilterMenuList } from "./FilterMenuList";
 import { SortMenuList } from "./SortMenuList";
-import { filterBookState, sortBookState } from "../../store/atom";
+import {
+  filterBookState,
+  openModalState,
+  sortBookState,
+  selectedBookIndex,
+} from "../../store/atom";
 import { BookSkeleton } from "../common/BookSkeleton";
 import { ScrollTopArrow } from "../common/ScrollTopArrow";
+import { BookModal } from "../common/BookModal";
 
 const drawerWidth = 240;
 
@@ -35,6 +41,8 @@ export const Books = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
+  const [open, setOpen] = useRecoilState(openModalState);
+  const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
   const sortBy = useRecoilValue(sortBookState);
   const filterBy = useRecoilValue(filterBookState);
   const userId = localStorage.getItem("userId");
@@ -50,7 +58,7 @@ export const Books = () => {
     skip: !userId,
   });
 
-  const { data: book, isLoading } = useGetAllBooksDetailsQuery("book");
+  const { data: book, isLoading } = useGetAllBooksQuery("books");
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -186,13 +194,19 @@ export const Books = () => {
             <Grid container spacing={2}>
               {(filteredBooks ?? book)?.map((book, index: number) => (
                 <Grid
-                  key={index}
+                  key={book.id}
                   size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
                   sx={{
                     mt: 3,
                   }}
                 >
-                  <Item key={index}>
+                  <Item
+                    key={book.id}
+                    onClick={() => {
+                      setSelectedIndex(index);
+                      setOpen(true);
+                    }}
+                  >
                     <>
                       <img
                         style={{
@@ -260,6 +274,12 @@ export const Books = () => {
           <ScrollTopArrow />
         </Grid>
       </Box>
+      <BookModal
+        open={open}
+        onClose={() => setOpen(false)}
+        books={filteredBooks || []}
+        initialIndex={selectedIndex}
+      />
     </>
   );
 };

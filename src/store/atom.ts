@@ -6,17 +6,21 @@ export const filterBookState = atom<FiltersState>({
   default: {
     Category: [],
     Author: [],
-    ReleaseDate : [0, 0]
+    ReleaseDate: [0, 0],
   },
 });
 
 export const sortBookState = atom({
   key: "sortBookState",
-  default: "",
+  default: "title",
 });
-
 
 export const selectedBookIndex = atom({
   key: "selectedBookIndex",
   default: 0,
+});
+
+export const openModalState = atom({
+  key: "openModalState",
+  default: false,
 });
