@@ -3,18 +3,12 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import { useTheme, useMediaQuery } from "@mui/material";
 
-import { useGetAllBooksDetailsQuery } from "../services/bookApi";
+import { useGetAllBooksQuery } from "../services/bookApi";
 import { NavBar } from "./NavBar";
 import { NewBooksList } from "./NewBooksList";
-import { data } from "../constant";
 import { BookCard } from "./common/BookCard";
 import { BookSkeleton } from "./common/BookSkeleton";
 import { ScrollTopArrow } from "./common/ScrollTopArrow";
-
-interface RenderDotProps {
-  selected: boolean;
-  index: number;
-}
 
 export const MainBanner = () => {
   const theme = useTheme();
@@ -22,7 +16,7 @@ export const MainBanner = () => {
   const isMedium = useMediaQuery(theme.breakpoints.down("md"));
   const booksPerSlide = isMobile ? 1 : isMedium ? 3 : 5;
 
-  const { isLoading, error } = useGetAllBooksDetailsQuery("booksDetails");
+  const { data, isLoading, error } = useGetAllBooksQuery("books");
 
   const bookGroups = useMemo(
     () => chunkArray(data, booksPerSlide),
@@ -105,8 +99,8 @@ export const MainBanner = () => {
   );
 };
 
-export function chunkArray<T>(array: T[], size: number): T[][] {
-  if (size <= 0) return [];
+export function chunkArray<T>(array: T[] | undefined, size: number): T[][] {
+  if (!array || size <= 0) return [];
   const chunks: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
     chunks.push(array.slice(i, i + size));
@@ -139,3 +133,8 @@ const getCommonProps = () => {
     disableTransition: false,
   };
 };
+
+interface RenderDotProps {
+  selected: boolean;
+  index: number;
+}

@@ -19,5 +19,16 @@ export interface Book {
   available: number;
   short_description: string;
   long_description: string;
-  category_id: string;
+  category_id?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+}
+
+export interface FiltersState {
+  Category: string[];
+  Author: string[];
+  ReleaseDate: number[];
 }

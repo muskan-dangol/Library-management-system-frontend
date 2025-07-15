@@ -1,18 +1,17 @@
-import { useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRecoilState } from "recoil";
 
 import { BookSkeleton } from "./common/BookSkeleton";
-import { useGetAllBooksDetailsQuery } from "../services/bookApi";
+import { useGetAllBooksQuery } from "../services/bookApi";
 import { BookModal } from "./common/BookModal";
-import { selectedBookIndex } from "../store/atom";
+import { openModalState, selectedBookIndex } from "../store/atom";
 
 export const NewBooksList = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
 
-  const { data: book = [], isLoading } = useGetAllBooksDetailsQuery("book");
+  const { data: book = [], isLoading } = useGetAllBooksQuery("books");
 
   return (
     <Box
