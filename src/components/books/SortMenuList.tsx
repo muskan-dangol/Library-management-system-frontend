@@ -1,11 +1,13 @@
 import { Stack, Typography } from "@mui/material";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-import { sortBookState } from "../../store/atom";
+import { sortBookState, filterBookState } from "../../store/atom";
 import { FilterMenu } from "../common/FilterMenu";
+import { FiltersState } from "../../types";
 
-export const SortMenuList = () => {
+export const SortMenuList: React.FC<SortMenuListProps> = ({ onSortApply }) => {
   const [sortBy, setSortBy] = useRecoilState(sortBookState);
+  const filterBy = useRecoilValue(filterBookState);
 
   const sortMenus = [
     { value: "title", label: "Alphabetically" },
@@ -16,6 +18,7 @@ export const SortMenuList = () => {
   const handleSortChange = (selected: string[]) => {
     const newSortValue = selected[0] ?? "";
     setSortBy(newSortValue);
+    onSortApply({ sortBy: newSortValue, filterBy });
   };
 
   return (
@@ -36,4 +39,8 @@ export const SortMenuList = () => {
       />
     </Stack>
   );
+};
+
+type SortMenuListProps = {
+  onSortApply: (params: { sortBy?: string; filterBy?: FiltersState }) => void;
 };

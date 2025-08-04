@@ -37,10 +37,10 @@ export const BookDetailPage = () => {
       ) : (
         <Box sx={{ px: { xs: 2, sm: 6 }, py: 6 }}>
           <Grid container spacing={2} sx={{ justifyContent: "center" }}>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <img
                 style={{
-                  width: "auto",
+                  width: "100%",
                   maxHeight: "60vh",
                   borderRadius: "4px",
                 }}
@@ -48,7 +48,7 @@ export const BookDetailPage = () => {
                 alt={book.title}
               ></img>
             </Grid>
-            <Grid size={{ xs: 12, md: 9 }}>
+            <Grid size={{ xs: 12, sm: 9 }}>
               <Typography variant="h4">{book.title}</Typography>
               <Typography variant="body1">Writer: {book.author}</Typography>
               <Typography variant="body1">

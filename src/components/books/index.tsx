@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AppBar,
   Box,
@@ -16,8 +16,9 @@ import { useRecoilValue, useRecoilState } from "recoil";
 
 import { NavBar } from "../NavBar";
 import {
+  useFetchFilteredBooksQuery,
   useGetAllBooksQuery,
-  useGetFilteredBooksByKeywordQuery,
+  useLazyFetchFilteredBooksQuery,
 } from "../../services/bookApi";
 import { CustomButton } from "../common/Button";
 import { useGetUserDetailQuery } from "../../services/userApi";
@@ -47,12 +48,15 @@ export const Books = () => {
   const filterBy = useRecoilValue(filterBookState);
   const userId = localStorage.getItem("userId");
 
-  const { data: filteredBooks } = useGetFilteredBooksByKeywordQuery(
-    { sortBy, filterBy },
+  const { data: sortedBooks } = useFetchFilteredBooksQuery(
+    { sortBy },
     {
-      skip: !sortBy && !filterBy,
+      skip: !sortBy,
     }
   );
+
+  const [fetchFilteredBooks, { data: filteredBooks }] =
+    useLazyFetchFilteredBooksQuery();
 
   const { data: user } = useGetUserDetailQuery(userId || "", {
     skip: !userId,
@@ -74,6 +78,13 @@ export const Books = () => {
       setMobileOpen(!mobileOpen);
     }
   };
+
+  useEffect(() => {
+    if (sortBy) {
+      fetchFilteredBooks({ filterBy, sortBy });
+    }
+  }, [sortBy]);
+
   return (
     <>
       <NavBar />
@@ -130,7 +141,7 @@ export const Books = () => {
               justifyContent: { xs: "flex-start", sm: "flex-end" },
             }}
           >
-            <SortMenuList />
+            <SortMenuList  onSortApply={fetchFilteredBooks}/>
           </Grid>
         </Grid>
 
@@ -176,8 +187,8 @@ export const Books = () => {
                 },
               }}
             >
-              <FilterMenuList books={book} />
-              <SortMenuList />
+              <FilterMenuList books={book} onFilterApply={fetchFilteredBooks} />
+              <SortMenuList onSortApply={fetchFilteredBooks}/>
             </Drawer>
             <Box
               sx={{
@@ -187,14 +198,16 @@ export const Books = () => {
                 overflowY: "visible",
               }}
             >
-              <FilterMenuList books={book} />
+              <FilterMenuList books={book} onFilterApply={fetchFilteredBooks} />
             </Box>
           </Grid>
           <Grid size={{ xs: 12, sm: 8, md: 9 }}>
             <Grid container spacing={2}>
-              {(filteredBooks ?? book)?.map((book, index: number) => (
+              {(filteredBooks && filteredBooks.length > 0
+                ? filteredBooks
+                : sortedBooks ?? book
+              )?.map((book, index: number) => (
                 <Grid
-                  key={book.id}
                   size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
                   sx={{
                     mt: 3,

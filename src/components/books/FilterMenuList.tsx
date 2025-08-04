@@ -2,16 +2,22 @@ import { useMemo, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { Stack, Typography, FormControl, Slider } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useRecoilValue } from "recoil";
 
+import { sortBookState } from "../../store/atom";
 import { MultiSelectDropdown } from "../common/MultiSelectDropDown";
-import { Book } from "../../types";
+import { Book, FiltersState } from "../../types";
 import { filterBookState } from "../../store/atom";
 import { useGetAllCategoriesQuery } from "../../services/categoryApi";
+import { CustomButton } from "../common/Button";
 
-export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
+export const FilterMenuList: React.FC<FilterMenuListProps> = ({
+  books,
+  onFilterApply,
+}) => {
   const { data: allCategories } = useGetAllCategoriesQuery("category");
-
   const [selectedFilters, setSelectedFilters] = useRecoilState(filterBookState);
+  const sortBy = useRecoilValue(sortBookState);
 
   const filterMenus = useMemo(() => {
     const categories = (allCategories || []).map((category) => ({
@@ -33,21 +39,17 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
   }, [allCategories, books]);
 
   const latestYear = useMemo(() => {
-    if (!books || books.length === 0) return new Date().getFullYear();
-
-    const years = books.map((book) =>
-      new Date(book.release_date).getFullYear()
+    if (!books?.length) return new Date().getFullYear();
+    return Math.max(
+      ...books.map((b) => new Date(b.release_date).getFullYear())
     );
-    return Math.max(...years);
   }, [books]);
 
   const oldestYear = useMemo(() => {
-    if (!books || books.length === 0) return new Date().getFullYear();
-
-    const years = books.map((book) =>
-      new Date(book.release_date).getFullYear()
+    if (!books?.length) return new Date().getFullYear();
+    return Math.min(
+      ...books.map((b) => new Date(b.release_date).getFullYear())
     );
-    return Math.min(...years);
   }, [books]);
 
   useEffect(() => {
@@ -62,6 +64,11 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
     }
   }, [books, oldestYear, latestYear]);
 
+  const handleSubmitFilter = async (e: React.FormEvent) => {
+    e.preventDefault();
+    onFilterApply({ filterBy: selectedFilters, sortBy });
+  };
+
   return (
     <Stack direction="column" spacing={2} sx={{ mb: 2, mt: 2 }}>
       <Typography
@@ -72,6 +79,12 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
       </Typography>
 
       <FormContent>
+        <CustomButton
+          placeholder="Update Filter"
+          onClick={handleSubmitFilter}
+          sx={{ backgroundColor: "#031628", width: "fit-content" }}
+        />
+
         <MultiSelectDropdown
           label="Categories"
           options={filterMenus.Category}
@@ -80,9 +93,7 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
             setSelectedFilters((prev) => ({ ...prev, Category: newSelected }))
           }
         />
-      </FormContent>
 
-      <FormContent>
         <MultiSelectDropdown
           label="Authors"
           options={filterMenus.Author}
@@ -91,8 +102,7 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
             setSelectedFilters((prev) => ({ ...prev, Author: newSelected }))
           }
         />
-      </FormContent>
-      <FormContent>
+
         <Typography variant="body1" sx={{ mt: 2 }}>
           Book Release Date:
         </Typography>
@@ -118,6 +128,7 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({ books }) => {
 
 type FilterMenuListProps = {
   books: Book[] | undefined;
+  onFilterApply: (params: { sortBy?: string; filterBy?: FiltersState }) => void;
 };
 
 const FormContent = styled(FormControl)`
