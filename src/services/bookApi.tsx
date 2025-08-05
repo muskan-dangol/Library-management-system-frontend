@@ -54,6 +54,5 @@ export const bookApi = api.injectEndpoints({
 export const {
   useGetAllBooksQuery,
   useLazyFetchFilteredBooksQuery,
-  useFetchFilteredBooksQuery,
   useGetBookByIdQuery,
 } = bookApi;

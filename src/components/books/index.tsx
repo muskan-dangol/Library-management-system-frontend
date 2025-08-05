@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -12,11 +12,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 import { NavBar } from "../NavBar";
 import {
-  useFetchFilteredBooksQuery,
   useGetAllBooksQuery,
   useLazyFetchFilteredBooksQuery,
 } from "../../services/bookApi";
@@ -24,12 +23,7 @@ import { CustomButton } from "../common/Button";
 import { useGetUserDetailQuery } from "../../services/userApi";
 import { FilterMenuList } from "./FilterMenuList";
 import { SortMenuList } from "./SortMenuList";
-import {
-  filterBookState,
-  openModalState,
-  sortBookState,
-  selectedBookIndex,
-} from "../../store/atom";
+import { openModalState, selectedBookIndex } from "../../store/atom";
 import { BookSkeleton } from "../common/BookSkeleton";
 import { ScrollTopArrow } from "../common/ScrollTopArrow";
 import { BookModal } from "../common/BookModal";
@@ -44,25 +38,16 @@ export const Books = () => {
 
   const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
-  const sortBy = useRecoilValue(sortBookState);
-  const filterBy = useRecoilValue(filterBookState);
   const userId = localStorage.getItem("userId");
 
-  const { data: sortedBooks } = useFetchFilteredBooksQuery(
-    { sortBy },
-    {
-      skip: !sortBy,
-    }
-  );
-
-  const [fetchFilteredBooks, { data: filteredBooks }] =
+  const [refetchFilteredBooks, { data: sortedBooks }] =
     useLazyFetchFilteredBooksQuery();
 
   const { data: user } = useGetUserDetailQuery(userId || "", {
     skip: !userId,
   });
 
-  const { data: book, isLoading } = useGetAllBooksQuery("books");
+  const { data: books, isLoading } = useGetAllBooksQuery("books");
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -78,12 +63,6 @@ export const Books = () => {
       setMobileOpen(!mobileOpen);
     }
   };
-
-  useEffect(() => {
-    if (sortBy) {
-      fetchFilteredBooks({ filterBy, sortBy });
-    }
-  }, [sortBy]);
 
   return (
     <>
@@ -137,11 +116,10 @@ export const Books = () => {
             }}
             sx={{
               display: { xs: "none", sm: "flex" },
-
               justifyContent: { xs: "flex-start", sm: "flex-end" },
             }}
           >
-            <SortMenuList  onSortApply={fetchFilteredBooks}/>
+            <SortMenuList onSortApply={refetchFilteredBooks} />
           </Grid>
         </Grid>
 
@@ -187,8 +165,11 @@ export const Books = () => {
                 },
               }}
             >
-              <FilterMenuList books={book} onFilterApply={fetchFilteredBooks} />
-              <SortMenuList onSortApply={fetchFilteredBooks}/>
+              <FilterMenuList
+                books={books}
+                onFilterApply={refetchFilteredBooks}
+              />
+              <SortMenuList onSortApply={refetchFilteredBooks} />
             </Drawer>
             <Box
               sx={{
@@ -198,15 +179,15 @@ export const Books = () => {
                 overflowY: "visible",
               }}
             >
-              <FilterMenuList books={book} onFilterApply={fetchFilteredBooks} />
+              <FilterMenuList
+                books={books}
+                onFilterApply={refetchFilteredBooks}
+              />
             </Box>
           </Grid>
           <Grid size={{ xs: 12, sm: 8, md: 9 }}>
             <Grid container spacing={2}>
-              {(filteredBooks && filteredBooks.length > 0
-                ? filteredBooks
-                : sortedBooks ?? book
-              )?.map((book, index: number) => (
+              {(sortedBooks ?? books)?.map((book, index: number) => (
                 <Grid
                   size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
                   sx={{
@@ -290,7 +271,7 @@ export const Books = () => {
       <BookModal
         open={open}
         onClose={() => setOpen(false)}
-        books={filteredBooks || []}
+        books={sortedBooks || books || []}
         initialIndex={selectedIndex}
       />
     </>

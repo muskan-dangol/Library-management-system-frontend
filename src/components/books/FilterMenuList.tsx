@@ -38,36 +38,16 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({
     };
   }, [allCategories, books]);
 
-  const latestYear = useMemo(() => {
-    if (!books?.length) return new Date().getFullYear();
-    return Math.max(
-      ...books.map((b) => new Date(b.release_date).getFullYear())
-    );
-  }, [books]);
-
-  const oldestYear = useMemo(() => {
-    if (!books?.length) return new Date().getFullYear();
-    return Math.min(
-      ...books.map((b) => new Date(b.release_date).getFullYear())
-    );
-  }, [books]);
-
-  useEffect(() => {
-    if (
-      books?.length &&
-      selectedFilters.ReleaseDate[0] === selectedFilters.ReleaseDate[1]
-    ) {
-      setSelectedFilters((prev) => ({
-        ...prev,
-        ReleaseDate: [oldestYear, latestYear],
-      }));
-    }
-  }, [books, oldestYear, latestYear]);
-
   const handleSubmitFilter = async (e: React.FormEvent) => {
     e.preventDefault();
     onFilterApply({ filterBy: selectedFilters, sortBy });
   };
+
+  useEffect(() => {
+    if (selectedFilters) {
+      onFilterApply({ filterBy: selectedFilters, sortBy });
+    }
+  }, [books]);
 
   return (
     <Stack direction="column" spacing={2} sx={{ mb: 2, mt: 2 }}>
@@ -110,9 +90,9 @@ export const FilterMenuList: React.FC<FilterMenuListProps> = ({
           sx={{ mt: 1 }}
           getAriaLabel={() => "Year range"}
           value={selectedFilters.ReleaseDate}
-          min={oldestYear}
-          max={latestYear}
-          step={1}
+          min={1900}
+          max={2025}
+          step={5}
           onChange={(event: Event, newValue: number[]) =>
             setSelectedFilters((prev) => ({
               ...prev,
