@@ -37,17 +37,18 @@ export const BookDetailPage = () => {
       ) : (
         <Box sx={{ px: { xs: 2, sm: 6 }, py: 6 }}>
           <Grid container spacing={2} sx={{ justifyContent: "center" }}>
-            <Grid size={{ md: 4, xs: 12 }}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <img
                 style={{
                   width: "100%",
+                  maxHeight: "60vh",
                   borderRadius: "4px",
                 }}
                 src={book.image}
                 alt={book.title}
               ></img>
             </Grid>
-            <Grid size={{ md: 8 }}>
+            <Grid size={{ xs: 12, sm: 9 }}>
               <Typography variant="h4">{book.title}</Typography>
               <Typography variant="body1">Writer: {book.author}</Typography>
               <Typography variant="body1">

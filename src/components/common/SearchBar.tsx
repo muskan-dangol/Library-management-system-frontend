@@ -2,10 +2,6 @@ import { styled, alpha } from "@mui/material/styles";
 import { InputBase } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-interface SearchBarProps {
-  sx?: object;
-}
-
 export const SearchBar: React.FC<SearchBarProps> = ({ sx }) => (
   <Search sx={sx}>
     <SearchIconWrapper>
@@ -17,7 +13,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ sx }) => (
     />
   </Search>
 );
-
 
 // custom styles
 const Search = styled("div")(({ theme }) => ({
@@ -31,7 +26,7 @@ const Search = styled("div")(({ theme }) => ({
   marginLeft: 0,
   width: "auto",
   [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(2),
     width: "100%",
   },
 }));
@@ -48,13 +43,15 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
+  width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
   },
 }));
+
+interface SearchBarProps {
+  sx?: object;
+}

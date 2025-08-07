@@ -1,18 +1,17 @@
-import { useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRecoilState } from "recoil";
 
 import { BookSkeleton } from "./common/BookSkeleton";
-import { useGetAllBooksDetailsQuery } from "../services/bookApi";
+import { useGetAllBooksQuery } from "../services/bookApi";
 import { BookModal } from "./common/BookModal";
-import { selectedBookIndex } from "../store/atom";
+import { openModalState, selectedBookIndex } from "../store/atom";
 
 export const NewBooksList = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
 
-  const { data: book = [], isLoading } = useGetAllBooksDetailsQuery("book");
+  const { data: books = [], isLoading } = useGetAllBooksQuery("books");
 
   return (
     <Box
@@ -43,7 +42,7 @@ export const NewBooksList = () => {
             </Grid>
           ))}
 
-        {book.map((book, index: number) => (
+        {books.map((book, index: number) => (
           <Grid
             key={book.id}
             size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
@@ -112,7 +111,7 @@ export const NewBooksList = () => {
       <BookModal
         open={open}
         onClose={() => setOpen(false)}
-        books={book || []}
+        books={books || []}
         initialIndex={selectedIndex}
       />
     </Box>
