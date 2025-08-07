@@ -11,7 +11,7 @@ export const NewBooksList = () => {
   const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
 
-  const { data: book = [], isLoading } = useGetAllBooksQuery("books");
+  const { data: books = [], isLoading } = useGetAllBooksQuery("books");
 
   return (
     <Box
@@ -42,7 +42,7 @@ export const NewBooksList = () => {
             </Grid>
           ))}
 
-        {book.map((book, index: number) => (
+        {books.map((book, index: number) => (
           <Grid
             key={book.id}
             size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
@@ -111,7 +111,7 @@ export const NewBooksList = () => {
       <BookModal
         open={open}
         onClose={() => setOpen(false)}
-        books={book || []}
+        books={books || []}
         initialIndex={selectedIndex}
       />
     </Box>

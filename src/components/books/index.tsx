@@ -33,8 +33,7 @@ const drawerWidth = 240;
 export const Books = () => {
   const navigate = useNavigate();
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
@@ -49,19 +48,8 @@ export const Books = () => {
 
   const { data: books, isLoading } = useGetAllBooksQuery("books");
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
-  };
-
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
-
   const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
   return (
@@ -148,9 +136,8 @@ export const Books = () => {
           >
             <Drawer
               variant="temporary"
-              open={mobileOpen}
-              onTransitionEnd={handleDrawerTransitionEnd}
-              onClose={handleDrawerClose}
+              open={isDrawerOpen}
+              onClose={handleDrawerToggle}
               sx={{
                 display: { xs: "block", sm: "none" },
                 "& .MuiDrawer-paper": {
