@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   ClickAwayListener,
@@ -8,6 +9,7 @@ import {
   MenuList,
   Paper,
   Popper,
+  TextField,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useRef, useState } from "react";
@@ -28,6 +30,7 @@ export const MultiSelectDropdown: React.FC<Props> = ({
   onChange,
 }) => {
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const toggleItem = (value: string) => {
@@ -46,7 +49,12 @@ export const MultiSelectDropdown: React.FC<Props> = ({
     )
       return;
     setOpen(false);
+    setSearchTerm("");
   };
+
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -92,24 +100,40 @@ export const MultiSelectDropdown: React.FC<Props> = ({
           >
             <Paper sx={{ width: anchorRef.current?.offsetWidth || 200 }}>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList
-                  autoFocusItem={open}
-                  sx={{
-                    maxHeight: "200px",
-                    overflow: "auto",
-                    minWidth: "200px",
-                  }}
-                >
-                  {options.map((option) => (
-                    <MenuItem
-                      key={option.value}
-                      onClick={() => toggleItem(option.value)}
-                    >
-                      <Checkbox checked={selected.includes(option.value)} />
-                      <ListItemText primary={option.label} />
-                    </MenuItem>
-                  ))}
-                </MenuList>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <TextField
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    size="small"
+                    autoFocus={open}
+                    sx={{ p: 1 }}
+                  />
+                  <MenuList
+                    autoFocusItem={false}
+                    sx={{
+                      maxHeight: "200px",
+                      overflow: "auto",
+                      minWidth: "200px",
+                    }}
+                  >
+                    {filteredOptions.length > 0 ? (
+                      filteredOptions.map((option) => (
+                        <MenuItem
+                          key={option.value}
+                          onClick={() => toggleItem(option.value)}
+                        >
+                          <Checkbox checked={selected.includes(option.value)} />
+                          <ListItemText primary={option.label} />
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>
+                        <ListItemText primary="No results" />
+                      </MenuItem>
+                    )}
+                  </MenuList>
+                </Box>
               </ClickAwayListener>
             </Paper>
           </Grow>
