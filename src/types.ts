@@ -10,6 +10,21 @@ export interface LoginFormData {
   password: string;
 }
 
+export interface BookFormData {
+  title: string;
+  author: string;
+  image: File | null;
+  release_date: string;
+  available: number;
+  short_description: string;
+  long_description: string;
+  category_id: string;
+}
+
+export interface CategoryFormData {
+  name: string;
+}
+
 export interface Book {
   id: string;
   title: string;

@@ -13,6 +13,17 @@ export interface BookResponse {
   category_id?: string;
 }
 
+export interface CreateNewBookRequest {
+  title: string;
+  author: string;
+  release_date: string;
+  available: number;
+  image: File;
+  short_description: string;
+  long_description: string;
+  category_id: string;
+}
+
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllBooks: builder.query<Book[], string>({
@@ -48,6 +59,15 @@ export const bookApi = api.injectEndpoints({
       }),
       providesTags: ["book"],
     }),
+
+    addBook: builder.mutation<BookResponse, CreateNewBookRequest>({
+      query: ({ ...newBook }) => ({
+        url: "/books",
+        method: "POST",
+        body: newBook,
+      }),
+      invalidatesTags: ["book"],
+    }),
   }),
 });
 
@@ -55,4 +75,5 @@ export const {
   useGetAllBooksQuery,
   useLazyFetchFilteredBooksQuery,
   useGetBookByIdQuery,
+  useAddBookMutation
 } = bookApi;

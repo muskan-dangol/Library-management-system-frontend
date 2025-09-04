@@ -24,3 +24,8 @@ export const openModalState = atom({
   key: "openModalState",
   default: false,
 });
+
+export const openAdminFormState = atom({
+  key: "openAdminFormState",
+  default: false,
+});

@@ -3,24 +3,32 @@ import { FormControl, Grid } from "@mui/material";
 type FormWrapperProps = {
   children?: React.ReactNode;
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  width: object;
+  minHeight?: string;
 };
 
 export const FromWrapper: React.FC<FormWrapperProps> = ({
   children,
   onSubmit,
+  width,
+  minHeight,
 }) => {
   return (
-    <form onSubmit={onSubmit}>
-      <Grid container justifyContent={"center"} alignItems="center">
+    <form onSubmit={onSubmit} style={{overflow: "auto"}}>
+      <Grid
+        container
+        justifyContent={"center"}
+        alignItems="center"
+        sx={{ minHeight: minHeight || "fit-content" }}
+      >
         <Grid
-          width={{ xs: "80%", sm: "70%", md: "50%", lg: "30%" }}
           size={{ xs: 12, sm: 12, md: 12 }}
           sx={{
+            width: width || { xs: "80%", sm: "70%", md: "50%", lg: "30%" },
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            mt: 15,
+            pb: 5,
           }}
         >
           <FormControl
