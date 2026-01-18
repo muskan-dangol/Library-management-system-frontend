@@ -16,7 +16,7 @@ export const MainBanner = () => {
   const isMedium = useMediaQuery(theme.breakpoints.down("md"));
   const booksPerSlide = isMobile ? 1 : isMedium ? 3 : 5;
 
-  const { data, isLoading, error } = useGetAllBooksQuery("books");
+  const { data, isLoading, error } = useGetAllBooksQuery();
 
   const bookGroups = useMemo(
     () => chunkArray(data, booksPerSlide),

@@ -49,7 +49,7 @@ export const Books = () => {
     skip: !userId,
   });
 
-  const { data: books, isLoading } = useGetAllBooksQuery("books");
+  const { data: books = [], isLoading } = useGetAllBooksQuery();
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);

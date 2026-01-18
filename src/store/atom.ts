@@ -6,7 +6,7 @@ export const filterBookState = atom<FiltersState>({
   default: {
     Category: [],
     Author: [],
-    ReleaseDate: [1900, 2025],
+    ReleaseDate: [1500, new Date().getFullYear()],
   },
 });
 

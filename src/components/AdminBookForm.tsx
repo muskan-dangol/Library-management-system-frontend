@@ -6,6 +6,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useDropzone } from "react-dropzone";
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -37,13 +38,18 @@ export const AdminBookForm: React.FC<AdminBookFormProp> = ({
   const dispatch = useDispatch<AppDispatch>();
   const { bookFormData } = useSelector((state: RootState) => state.book);
 
-  const [addBook, { isLoading, error }] = useAddBookMutation();
+  const [addBook, { isLoading }] = useAddBookMutation();
   const { data: categories } = useGetAllCategoriesQuery("category");
 
   const [selectedCategories, setSelectedCategories] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(updateBookFormData({ [e.target.name]: e.target.value }));
@@ -94,7 +100,18 @@ export const AdminBookForm: React.FC<AdminBookFormProp> = ({
 
   const handleSubmitNewBook = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!selectedCategories) {
+      setOpenSnackBar(true);
+      setSnackbarMessage("Category is missing!");
+      setSnackbarSeverity("error");
+      return;
+    }
+
     if (!imageFile) {
+      setOpenSnackBar(true);
+      setSnackbarMessage("Image is missing!");
+      setSnackbarSeverity("error");
       return;
     }
 
@@ -106,9 +123,12 @@ export const AdminBookForm: React.FC<AdminBookFormProp> = ({
       }).unwrap();
 
       dispatch(resetBookFormData());
+      onClose();
       setSelectedCategories("");
       setImageFile(null);
       setImageUrl("");
+      setSnackbarMessage("Book added successfully!");
+      setSnackbarSeverity("success");
       setOpenSnackBar(true);
     } catch (err) {
       console.error("Error adding book:", err);
@@ -116,167 +136,172 @@ export const AdminBookForm: React.FC<AdminBookFormProp> = ({
   };
 
   return (
-    <BootstrapDialog
-      onClose={onClose}
-      open={open}
-      slots={{ transition: Transition }}
-      fullWidth
-      scroll="paper"
-    >
-      <IconButton
-        onClick={handleCloseAdminForm}
-        sx={{
-          position: "absolute",
-          top: { sm: 0, xs: -45 },
-          right: { sm: -50, xs: 0 },
-          backgroundColor: "#fff",
-          borderRadius: "10%",
-          zIndex: 1,
-          boxShadow: 3,
-          "&:hover": {
-            backgroundColor: "#eee",
-          },
-        }}
+    <>
+      <BootstrapDialog
+        onClose={onClose}
+        open={open}
+        slots={{ transition: Transition }}
+        fullWidth
+        scroll="paper"
       >
-        <CloseIcon />
-      </IconButton>
-      <Typography variant="h4" sx={{ margin: 1, p: 3, textAlign: "center" }}>
-        Enter details of new book!
-      </Typography>
-
-      <FromWrapper
-        onSubmit={handleSubmitNewBook}
-        width={{ xs: "80%", sm: "70%", md: "80%", lg: "80%" }}
-      >
-        <FilterMenu
-          label="Category"
-          options={categoryLists}
-          selected={selectedCategories ? [selectedCategories] : []}
-          onChange={handleCategoryChange}
-          checkBox={false}
-          radioButton={true}
-          search={true}
-        />
-
-        <TextField
-          type="text"
-          name="title"
-          label="Title"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.title}
-          onChange={handleChange}
-        />
-        <TextField
-          type="text"
-          name="author"
-          label="Author"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.author}
-          onChange={handleChange}
-        />
-        <TextField
-          type="date"
-          name="release_date"
-          helperText="Please enter release date of the book"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.release_date}
-          onChange={handleChange}
-        />
-        <TextField
-          type="number"
-          name="available"
-          label="Available"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.available}
-          onChange={handleChange}
-        />
-        <TextField
-          type="text"
-          name="short_description"
-          label="Short Description"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.short_description}
-          onChange={handleChange}
-        />
-        <TextField
-          type="text"
-          name="long_description"
-          label="Long Description"
-          variant="outlined"
-          size="small"
-          sx={{ margin: 1 }}
-          required
-          value={bookFormData.long_description}
-          onChange={handleChange}
-        />
-
-        <Box
-          {...getRootProps()}
+        <IconButton
+          onClick={handleCloseAdminForm}
           sx={{
-            height: 40,
-            p: 2,
-            borderRadius: 2,
-            width: "auto",
-            border: "2px dashed #031628",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            m: 1,
+            position: "absolute",
+            top: { sm: 0, xs: -45 },
+            right: { sm: -50, xs: 0 },
+            backgroundColor: "#fff",
+            borderRadius: "10%",
+            zIndex: 1,
+            boxShadow: 3,
+            "&:hover": {
+              backgroundColor: "#eee",
+            },
           }}
         >
-          <input {...getInputProps()} required />
-          <Typography width={"100%"}>
-            Click or drop an image or a gif file here
-          </Typography>
-          <CloudUploadIcon sx={{ color: "#031628", margin: 2 }} />
-        </Box>
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h4" sx={{ margin: 1, p: 3, textAlign: "center" }}>
+          Enter details of new book!
+        </Typography>
 
-        {imageUrl && (
-          <Box sx={{ mt: 2, textAlign: "center" }}>
-            <img
-              src={imageUrl}
-              alt="Preview"
-              style={{ maxWidth: "300px", maxHeight: "300px" }}
-            />
-          </Box>
-        )}
-
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={isLoading}
-          fullWidth
-          sx={{ backgroundColor: "#031628", width: "auto", margin: 1, mt: 2 }}
+        <FromWrapper
+          onSubmit={handleSubmitNewBook}
+          width={{ xs: "80%", sm: "70%", md: "80%", lg: "80%" }}
         >
-          {isLoading ? "Adding..." : "Add Book"}
-        </Button>
-        {error && (
-          <Typography color="error">Error: {JSON.stringify(error)}</Typography>
-        )}
+          <FilterMenu
+            label="Category"
+            options={categoryLists}
+            selected={selectedCategories ? [selectedCategories] : []}
+            onChange={handleCategoryChange}
+            checkBox={false}
+            radioButton={true}
+            search={true}
+          />
 
-        <Snackbar
-          open={openSnackBar}
-          autoHideDuration={5000}
+          <TextField
+            type="text"
+            name="title"
+            label="Title"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.title}
+            onChange={handleChange}
+          />
+          <TextField
+            type="text"
+            name="author"
+            label="Author"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.author}
+            onChange={handleChange}
+          />
+          <TextField
+            type="date"
+            name="release_date"
+            helperText="Please enter release date of the book"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.release_date}
+            onChange={handleChange}
+          />
+          <TextField
+            type="number"
+            name="available"
+            label="Available"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.available}
+            onChange={handleChange}
+          />
+          <TextField
+            type="text"
+            name="short_description"
+            label="Short Description"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.short_description}
+            onChange={handleChange}
+          />
+          <TextField
+            type="text"
+            name="long_description"
+            label="Long Description"
+            variant="outlined"
+            size="small"
+            sx={{ margin: 1 }}
+            required
+            value={bookFormData.long_description}
+            onChange={handleChange}
+          />
+
+          <Box
+            {...getRootProps()}
+            sx={{
+              height: 40,
+              p: 2,
+              borderRadius: 2,
+              width: "auto",
+              border: "2px dashed #031628",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              m: 1,
+            }}
+          >
+            <input {...getInputProps()} />
+            <Typography width={"100%"}>
+              Click or drop an image or a gif file here
+            </Typography>
+            <CloudUploadIcon sx={{ color: "#031628", margin: 2 }} />
+          </Box>
+
+          {imageUrl && (
+            <Box sx={{ mt: 2, textAlign: "center" }}>
+              <img
+                src={imageUrl}
+                alt="Preview"
+                style={{ maxWidth: "300px", maxHeight: "300px" }}
+              />
+            </Box>
+          )}
+
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading}
+            fullWidth
+            sx={{ backgroundColor: "#031628", width: "auto", margin: 1, mt: 2 }}
+          >
+            {isLoading ? "Adding..." : "Add Book"}
+          </Button>
+        </FromWrapper>
+      </BootstrapDialog>
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackBar}
+      >
+        <Alert
           onClose={handleCloseSnackBar}
-          message="Book added successfully!"
-        />
-      </FromWrapper>
-    </BootstrapDialog>
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

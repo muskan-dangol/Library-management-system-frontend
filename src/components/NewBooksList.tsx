@@ -11,7 +11,7 @@ export const NewBooksList = () => {
   const [open, setOpen] = useRecoilState(openModalState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
 
-  const { data: books = [], isLoading } = useGetAllBooksQuery("books");
+  const { data: books = [], isLoading } = useGetAllBooksQuery();
 
   return (
     <Box
