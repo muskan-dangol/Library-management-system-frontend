@@ -86,21 +86,37 @@ export const NewBooksList = () => {
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ display: "block", color: "text.secondary" }}
-                >
-                  {book.short_description}
-                </Typography>
-                <Typography
-                  variant="body2"
                   sx={{
                     fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                    display: "flex",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <b>Release:</b> {book.release_date.slice(0, 10)}
+                  <b>Author: </b> {book.author}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <b>Release: </b> {book.release_date.slice(0, 10)}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 5,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    color: "text.secondary",
+                  }}
+                >
+                  {book.short_description}
                 </Typography>
               </Box>
             </Item>

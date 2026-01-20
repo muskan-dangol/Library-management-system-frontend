@@ -1,28 +1,8 @@
 import { api } from "./api";
-import { Book, FiltersState } from "../types";
+import { Book, FiltersState, BookFormData } from "../types";
 
-export interface BookResponse {
-  id: string;
-  title: string;
-  author: string;
-  release_date: string;
-  available: number;
-  short_description: string;
-  long_description: string;
-  image: string;
-  category_id?: string;
-}
-
-export interface CreateNewBookRequest {
-  title: string;
-  author: string;
-  release_date: string;
-  available: number;
-  image: File;
-  short_description: string;
-  long_description: string;
-  category_id: string;
-}
+export type BookResponse = Book;
+export type CreateNewBookRequest = BookFormData;
 
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -88,5 +68,5 @@ export const {
   useGetAllBooksQuery,
   useLazyFetchFilteredBooksQuery,
   useGetBookByIdQuery,
-  useAddBookMutation
+  useAddBookMutation,
 } = bookApi;

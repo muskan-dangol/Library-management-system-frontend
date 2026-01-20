@@ -1,14 +1,8 @@
 import { api } from "./api";
-import { Category } from "../types";
+import { Category, CategoryFormData } from "../types";
 
-export interface CategoryResponse {
-  id: string;
-  name: string;
-}
-
-export interface CreateNewCategoryRequest {
-  name: string;
-}
+export type CategoryResponse = Category;
+export type CreateNewCategoryRequest = CategoryFormData;
 
 export const categoryApi = api.injectEndpoints({
   endpoints: (builder) => ({

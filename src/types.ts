@@ -13,7 +13,7 @@ export interface LoginFormData {
 export interface BookFormData {
   title: string;
   author: string;
-  image: File | null;
+  image: File;
   release_date: string;
   available: number;
   short_description: string;
@@ -25,21 +25,21 @@ export interface CategoryFormData {
   name: string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+}
+
 export interface Book {
   id: string;
   title: string;
   author: string;
-  image?: string;
+  image: string;
   release_date: string;
   available: number;
   short_description: string;
   long_description: string;
   category_id?: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
 }
 
 export interface FiltersState {

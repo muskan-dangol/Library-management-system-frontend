@@ -38,7 +38,8 @@ export const Books = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [open, setOpen] = useRecoilState(openModalState);
-  const [isAdminFormOpen, setIsAdminFormOpen] = useRecoilState(openAdminFormState);
+  const [isAdminFormOpen, setIsAdminFormOpen] =
+    useRecoilState(openAdminFormState);
   const [selectedIndex, setSelectedIndex] = useRecoilState(selectedBookIndex);
   const userId = localStorage.getItem("userId");
 
@@ -196,7 +197,6 @@ export const Books = () => {
                         style={{
                           width: "100%",
                           maxHeight: "100%",
-                          height: 200,
                           objectFit: "cover",
                           borderRadius: "4px",
                         }}
@@ -222,12 +222,6 @@ export const Books = () => {
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ display: "block", color: "text.secondary" }}
-                      >
-                        {book.short_description}
-                      </Typography>
-                      <Typography
-                        variant="body2"
                         sx={{
                           fontSize: { xs: "0.8rem", sm: "0.9rem" },
                           overflow: "hidden",
@@ -241,13 +235,24 @@ export const Books = () => {
                         variant="body2"
                         sx={{
                           fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                          display: "flex",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                         }}
                       >
                         <b>Release:</b> {book.release_date.slice(0, 10)}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          color: "text.secondary",
+                        }}
+                      >
+                        {book.short_description}
                       </Typography>
                     </Box>
                   </Item>
@@ -259,7 +264,10 @@ export const Books = () => {
         </Grid>
       </Box>
 
-      <AdminBookForm open={isAdminFormOpen} onClose={() => setIsAdminFormOpen(false)} />
+      <AdminBookForm
+        open={isAdminFormOpen}
+        onClose={() => setIsAdminFormOpen(false)}
+      />
       <BookModal
         open={open}
         onClose={() => setOpen(false)}

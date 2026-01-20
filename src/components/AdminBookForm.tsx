@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { styled } from "@mui/material/styles";
 import { TransitionProps } from "@mui/material/transitions";
@@ -75,12 +75,14 @@ export const AdminBookForm: React.FC<AdminBookFormProp> = ({
     },
   });
 
-  const categoryLists = categories
-    ? categories.map((category) => ({
-        value: category.id,
-        label: category.name,
-      }))
-    : [];
+  const categoryLists = useMemo(() => {
+    return categories
+      ? categories.map((category) => ({
+          value: category.id,
+          label: category.name,
+        }))
+      : [];
+  }, [categories]);
 
   const handleCategoryChange = (selected: string[]) => {
     const newCategory = selected[0] ?? "";

@@ -76,7 +76,14 @@ export const BookModal: React.FC<BookModalProp> = ({
         {books.map((book) => (
           <DialogContent key={book.id}>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid
+                size={{ xs: 12, md: 6 }}
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  alignSelf: "flex-start",
+                }}
+              >
                 <img
                   style={{
                     width: "100%",
@@ -89,7 +96,7 @@ export const BookModal: React.FC<BookModalProp> = ({
                   src={book.image}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }} sx={{ padding: 1 }}>
                 <Typography variant="h4">{book.title}</Typography>
                 <Typography variant="caption">
                   {book.short_description}
@@ -104,7 +111,7 @@ export const BookModal: React.FC<BookModalProp> = ({
                 )}
                 <Button
                   onClick={() => {
-                    navigate(`/books/${book?.id ?? book.id}`);
+                    navigate(`/books/${book?.id}`);
                     onClose();
                   }}
                   sx={{ color: "#000", mb: 1 }}
