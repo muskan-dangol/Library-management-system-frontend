@@ -64,7 +64,11 @@ export const Signup = () => {
   };
 
   return (
-    <FromWrapper onSubmit={handleSubmit}>
+    <FromWrapper
+      onSubmit={handleSubmit}
+      width={{ xs: "80%", sm: "70%", md: "50%", lg: "30%" }}
+      minHeight="100vh"
+    >
       <Typography variant="h6" sx={{ margin: 1 }}>
         Sign Up
       </Typography>

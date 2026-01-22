@@ -1,21 +1,12 @@
 import { api } from "./api";
-import { Book, FiltersState } from "../types";
+import { Book, FiltersState, BookFormData } from "../types";
 
-export interface BookResponse {
-  id: string;
-  title: string;
-  author: string;
-  release_date: string;
-  available: number;
-  short_description: string;
-  long_description: string;
-  image: string;
-  category_id?: string;
-}
+export type BookResponse = Book;
+export type CreateNewBookRequest = BookFormData;
 
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllBooks: builder.query<Book[], string>({
+    getAllBooks: builder.query<Book[], void>({
       query: () => ({
         url: "/books",
         method: "GET",
@@ -48,6 +39,28 @@ export const bookApi = api.injectEndpoints({
       }),
       providesTags: ["book"],
     }),
+
+    addBook: builder.mutation<BookResponse, CreateNewBookRequest>({
+      query: (newBook) => {
+        const formData = new FormData();
+
+        formData.append("title", newBook.title);
+        formData.append("author", newBook.author);
+        formData.append("release_date", newBook.release_date);
+        formData.append("available", String(newBook.available));
+        formData.append("short_description", newBook.short_description);
+        formData.append("long_description", newBook.long_description);
+        formData.append("category_id", newBook.category_id);
+        formData.append("image", newBook.image);
+
+        return {
+          url: "/books",
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: ["book"],
+    }),
   }),
 });
 
@@ -55,4 +68,5 @@ export const {
   useGetAllBooksQuery,
   useLazyFetchFilteredBooksQuery,
   useGetBookByIdQuery,
+  useAddBookMutation,
 } = bookApi;

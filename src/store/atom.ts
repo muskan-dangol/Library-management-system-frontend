@@ -6,7 +6,7 @@ export const filterBookState = atom<FiltersState>({
   default: {
     Category: [],
     Author: [],
-    ReleaseDate: [1900, 2025],
+    ReleaseDate: [1500, new Date().getFullYear()],
   },
 });
 
@@ -22,5 +22,10 @@ export const selectedBookIndex = atom({
 
 export const openModalState = atom({
   key: "openModalState",
+  default: false,
+});
+
+export const openAdminFormState = atom({
+  key: "openAdminFormState",
   default: false,
 });

@@ -67,7 +67,7 @@ export const Login = () => {
   };
 
   return (
-    <FromWrapper onSubmit={handleSubmit}>
+    <FromWrapper onSubmit={handleSubmit} width={{ xs: "80%", sm: "70%", md: "50%", lg: "30%" }} minHeight="100vh">
       <Typography variant="h6" sx={{ margin: 1 }}>
         Enter your login details!
       </Typography>
@@ -158,6 +158,7 @@ export const Login = () => {
         variant="contained"
         sx={{ margin: 1 }}
         disabled={isLoading === !!true}
+        onClick={() => navigate("/login")}
       >
         {isLoading === true ? "loading..." : "Login"}
       </Button>

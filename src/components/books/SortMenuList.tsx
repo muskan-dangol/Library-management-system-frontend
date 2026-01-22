@@ -36,6 +36,7 @@ export const SortMenuList: React.FC<SortMenuListProps> = ({ onSortApply }) => {
         onChange={handleSortChange}
         checkBox={false}
         radioButton={true}
+        search={false}
       />
     </Stack>
   );
